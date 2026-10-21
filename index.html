@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d12">
+<title>TRANSFORM ALBERO</title>
+<style>
+:root{--bg:#0b0d12;--panel:#141821;--panel2:#1b202b;--line:#2a3140;--text:#f4f6fb;--muted:#9aa4b5;--green:#b7ff35;--cyan:#52e0d0;--red:#ff6685}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,#18231a 0,#0b0d12 42%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:1100px;margin:auto;padding:22px 16px 50px}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px}.eyebrow{color:var(--green);font-size:11px;letter-spacing:2px;font-weight:800}.title{font-size:clamp(27px,6vw,42px);font-weight:900;letter-spacing:-1.5px;margin:5px 0}.sub{color:var(--muted);font-size:13px}.pill{border:1px solid #3a4a28;background:#1b2714;color:var(--green);border-radius:999px;padding:8px 11px;font-size:11px;font-weight:800;white-space:nowrap}
+nav{display:flex;gap:8px;overflow:auto;padding-bottom:13px;margin-bottom:16px}nav button{flex:0 0 auto;min-height:44px;touch-action:manipulation;background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:12px;padding:11px 14px;white-space:nowrap;font-weight:750}nav button.active{background:var(--green);color:#10140b;border-color:var(--green)}
+.section{display:none}.section.active{display:block}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.card{background:linear-gradient(145deg,#171c26,#11151c);border:1px solid var(--line);border-radius:18px;padding:16px;min-width:0}.metric-label{font-size:12px;color:var(--muted);font-weight:700}.metric{font-size:29px;font-weight:900;letter-spacing:-1px;margin:9px 0 4px}.delta{font-size:11px;color:var(--green)}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.card h2{font-size:16px;margin:0 0 14px}.card h3{font-size:13px;margin:0 0 12px}.muted{color:var(--muted);font-size:12px;line-height:1.5}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:12px;color:var(--muted);font-weight:700}.field input,.field select,.field textarea{width:100%;background:#0d1118;border:1px solid #303848;border-radius:10px;padding:12px;color:var(--text);font:inherit;min-width:0}.field textarea{min-height:76px;resize:vertical}.full{grid-column:1/-1}.btn{min-height:46px;touch-action:manipulation;cursor:pointer;background:var(--green);color:#10140b;border:0;border-radius:12px;padding:13px 16px;font-weight:900;width:100%;margin-top:14px}.btn.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}.btn.danger{background:#321a24;color:#ffb5c5;border:1px solid #663044}.chart{width:100%;height:230px;display:block}.chartwrap{position:relative}.legend{font-size:11px;color:var(--muted);margin-top:8px}.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.photo-box{background:#0d1118;border:1px dashed #3b4658;border-radius:14px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;position:relative}.photo-box img{width:100%;height:300px;object-fit:cover}.photo-box label{cursor:pointer;color:var(--green);font-weight:800;font-size:12px;padding:12px;text-align:center}.photo-box input{display:none}.history{width:100%;border-collapse:collapse;font-size:12px}.history th,.history td{padding:10px 7px;border-bottom:1px solid var(--line);text-align:left}.history th{color:var(--muted)}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions .btn{width:auto;flex:1}.notice{background:#1a2115;border:1px solid #334a24;border-radius:12px;padding:12px;color:#d8f8b1;font-size:12px;line-height:1.5;margin:12px 0}.small{font-size:10px;color:var(--muted);line-height:1.5;margin-top:12px}.hide{display:none!important}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.row{grid-template-columns:1fr}.wrap{padding:17px 12px 38px}.metric{font-size:25px}.photo-box img{height:240px}}
+@media(min-width:761px){.formgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div><div class="eyebrow">PERSONAL PERFORMANCE SYSTEM</div><div class="title">TRANSFORM ALBERO<span style="color:var(--green)">.</span></div><div class="sub">Ricomposizione • dieta • forza • abitudini</div></div><div class="pill">DARK MODE</div></header>
+<nav>
+<button class="active" data-tab="dash">Dashboard</button><button data-tab="daily">Diario</button><button data-tab="photos">Prima / Dopo</button><button data-tab="charts">Grafici</button><button data-tab="history">Storico & backup</button>
+</nav>
+<section id="dash" class="section active">
+<div class="grid">
+<div class="card"><div class="metric-label">PESO PIÙ RECENTE</div><div class="metric" id="mWeight">—</div><div class="delta" id="mWeightDelta">Inserisci il peso nel diario</div></div>
+<div class="card"><div class="metric-label">PASSI OGGI</div><div class="metric" id="mSteps">—</div><div class="delta">Movimento quotidiano</div></div>
+<div class="card"><div class="metric-label">CALORIE OGGI</div><div class="metric" id="mCalories">—</div><div class="delta">Obiettivo iniziale: 2.400–2.600</div></div>
+<div class="card"><div class="metric-label">VELO OGGI</div><div class="metric" id="mVelo">—</div><div class="delta">10,9 mg/bustina (Icy Berries)</div></div>
+</div>
+<div class="row">
+<div class="card"><h2>Andamento peso</h2><canvas id="dashWeight" class="chart"></canvas><div class="legend">Registra i pesi in condizioni simili; conta la tendenza, non la singola giornata.</div></div>
+<div class="card"><h2>Ultima giornata</h2><div id="lastSummary" class="muted">Ancora nessun dato. Vai su Diario per registrare la giornata.</div><div class="notice">Obiettivo: ricomposizione corporea — perdere grasso e migliorare forza e massa muscolare, senza diete estreme.</div></div>
+</div>
+</section>
+<section id="daily" class="section">
+<div class="card"><h2>Registra la giornata</h2><p class="muted">Compila quello che sai: i campi non sono tutti obbligatori. Il diario si salva su questo dispositivo/browser.</p>
+<form id="dailyForm"><div class="formgrid">
+<div class="field"><label>Data</label><input id="date" type="date" required></div>
+<div class="field"><label>Peso (kg)</label><input id="weight" type="number" step="0.1" min="0" placeholder="es. 108"></div>
+<div class="field"><label>Passi</label><input id="steps" type="number" min="0" placeholder="es. 8500"></div>
+<div class="field"><label>Acqua (ml)</label><input id="water" type="number" min="0" placeholder="es. 2000"></div>
+<div class="field"><label>Calorie stimate (kcal)</label><input id="calories" type="number" min="0" placeholder="es. 2500"></div>
+<div class="field"><label>Proteine (g)</label><input id="protein" type="number" min="0" placeholder="es. 145"></div>
+<div class="field"><label>Allenamento</label><select id="workout"><option value="">Seleziona</option><option>Pesi — petto e tricipiti</option><option>Pesi — schiena e bicipiti</option><option>Pesi — spalle e braccia</option><option>Richiamo parte alta</option><option>Camminata</option><option>Recupero attivo</option><option>Riposo</option></select></div>
+<div class="field"><label>Crunch completati</label><input id="crunch" type="number" min="0" placeholder="es. 20"></div>
+<div class="field"><label>Bustine VELO (numero)</label><input id="velo" type="number" min="0" step="1" placeholder="es. 2"></div>
+<div class="field"><label>mg per bustina</label><input id="mg" type="number" min="0" step="0.1" value="10.9"></div>
+<div class="field"><label>Hai svapato?</label><select id="vape"><option value="">Non indicato</option><option>No</option><option>Sì</option></select></div>
+<div class="field"><label>Circonferenza vita (cm)</label><input id="waist" type="number" step="0.1" min="0" placeholder="facoltativa"></div>
+<div class="field"><label>Evacuazioni (numero)</label><input id="bowel" type="number" min="0" step="1" placeholder="es. 2"></div>
+<div class="field"><label>Consistenza feci</label><select id="stool"><option value="">Non indicata</option><option>Normali / formate</option><option>Morbide ma formate</option><option>Pastose</option><option>Liquide / diarrea</option><option>Dure / stitichezza</option></select></div>
+<div class="field"><label>Pipì (numero)</label><input id="urination" type="number" min="0" step="1" placeholder="es. 4"></div>
+<div class="field full"><label>Cibo, quantità e note</label><textarea id="notes" placeholder="Pasti, fame, energie, carichi e sensazioni..."></textarea></div>
+</div><button class="btn" type="submit">SALVA GIORNATA</button></form>
+<div class="small">La nicotina totale è calcolata come mg dichiarati nelle bustine (numero × mg per bustina), non equivale alla quantità assorbita. Se cambi prodotto, aggiorna i mg.</div>
+</div>
+</section>
+<section id="photos" class="section">
+<div class="card"><h2>Trasformazione visiva</h2><p class="muted">Carica foto reali scattate con luce, distanza e posa simili. Le immagini restano in questo browser se il salvataggio locale è supportato; fai backup se vuoi conservarle.</p>
+<div class="photo-grid">
+<div><h3>PRIMA · PUNTO ZERO</h3><div class="photo-box" id="beforeBox"><span class="muted">Nessuna foto caricata</span><label for="beforeInput">＋ Carica foto iniziale</label><input id="beforeInput" type="file" accept="image/*"></div><div class="field" style="margin-top:9px"><label>Data foto iniziale</label><input id="beforeDate" type="date"></div></div>
+<div><h3>DOPO · PROGRESSO</h3><div class="photo-box" id="afterBox"><span class="muted">Nessuna foto caricata</span><label for="afterInput">＋ Carica foto aggiornata</label><input id="afterInput" type="file" accept="image/*"></div><div class="field" style="margin-top:9px"><label>Data foto aggiornata</label><input id="afterDate" type="date"></div></div>
+</div><button class="btn" id="savePhotoDates">SALVA DATE FOTO</button><div class="notice">Suggerimento: foto frontale, laterale e schiena ogni 4 settimane. Non serve posare o contrarre i muscoli: la coerenza rende il confronto più utile.</div></div>
+</section>
+<section id="charts" class="section">
+<div class="row">
+<div class="card"><h2>Peso (kg)</h2><canvas id="weightChart" class="chart"></canvas></div>
+<div class="card"><h2>Calorie (kcal)</h2><canvas id="calChart" class="chart"></canvas></div>
+<div class="card"><h2>Passi</h2><canvas id="stepsChart" class="chart"></canvas></div>
+<div class="card"><h2>Acqua (ml)</h2><canvas id="waterChart" class="chart"></canvas></div>
+<div class="card"><h2>Bustine VELO al giorno</h2><canvas id="veloChart" class="chart"></canvas></div>
+<div class="card"><h2>Nicotina dichiarata nelle bustine (mg)</h2><canvas id="nicChart" class="chart"></canvas><div class="legend">Non è una misura della nicotina assorbita.</div></div>
+</div>
+</section>
+<section id="history" class="section">
+<div class="card"><h2>Storico giornaliero</h2><div style="overflow:auto"><table class="history"><thead><tr><th>Data</th><th>Peso</th><th>Passi</th><th>Kcal</th><th>Allenamento</th><th>VELO</th><th></th></tr></thead><tbody id="historyRows"></tbody></table></div><p class="muted" id="emptyHistory">Ancora nessuna giornata registrata.</p>
+<div class="actions"><button class="btn secondary" id="exportBtn">Esporta backup JSON</button><button class="btn secondary" id="csvBtn">Esporta CSV</button><label class="btn secondary" style="display:block;text-align:center;cursor:pointer">Importa backup<input id="importInput" type="file" accept=".json,application/json" style="display:none"></label></div>
+<button class="btn danger" id="clearBtn">Cancella tutti i dati locali</button>
+<p class="small">IMPORTANTE SU IPHONE/IPAD: apri il file in Safari, non nell’anteprima rapida di File. Nell’anteprima i pulsanti possono non funzionare. I dati che inserisci sono salvati localmente nel browser di questo dispositivo, non in un account cloud. Non inserire dati identificativi. Esporta regolarmente un backup. Se apri il file su un altro dispositivo o in un browser diverso, i dati non si trasferiscono automaticamente.</p></div>
+</section>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const KEY='transformTracker_v1';
+let state={entries:[],photos:{before:null,after:null},photoDates:{before:'',after:''}};
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s)state={...state,...s};}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){alert('Spazio locale esaurito. Esporta un backup e prova con immagini più piccole.');}}
+function today(){let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+$('date').value=today();$('beforeDate').value=today();$('afterDate').value=today();
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===b.dataset.tab));render();}));
+$('dailyForm').addEventListener('submit',e=>{e.preventDefault();const g=id=>$(id).value;const n=id=>g(id)===''?null:Number(g(id));const entry={date:g('date'),weight:n('weight'),steps:n('steps'),water:n('water'),calories:n('calories'),protein:n('protein'),workout:g('workout'),crunch:n('crunch'),velo:n('velo'),mg:n('mg'),vape:g('vape'),waist:n('waist'),bowel:n('bowel'),stool:g('stool'),urination:n('urination'),notes:g('notes')};const idx=state.entries.findIndex(x=>x.date===entry.date);if(idx>=0)state.entries[idx]=entry;else state.entries.push(entry);state.entries.sort((a,b)=>a.date.localeCompare(b.date));save();render();alert('Giornata salvata!');});
+function fmt(v,s=''){return v===null||v===undefined||v===''?'—':Number(v).toLocaleString('it-IT')+s}
+function render(){const es=state.entries;const latest=[...es].reverse().find(e=>e.weight!==null);const t=es.find(e=>e.date===today());$('mWeight').textContent=latest?fmt(latest.weight,' kg'):'—';$('mWeightDelta').textContent=latest?'Ultimo dato · '+latest.date:'Inserisci il peso nel diario';$('mSteps').textContent=t?fmt(t.steps):'—';$('mCalories').textContent=t?fmt(t.calories):'—';$('mVelo').textContent=t?fmt(t.velo):'—';$('lastSummary').innerHTML=t?`<b>${t.date}</b><br>Peso: ${fmt(t.weight,' kg')}<br>Acqua: ${fmt(t.water,' ml')}<br>Proteine: ${fmt(t.protein,' g')}<br>Allenamento: ${t.workout||'—'}<br>Crunch: ${fmt(t.crunch)}<br>Svapo: ${t.vape||'—'}<br>Evacuazioni: ${fmt(t.bowel)} · Feci: ${t.stool||'—'}<br>Pipì: ${fmt(t.urination)}<br>${t.notes||''}`:'Nessun dato per oggi. Apri Diario e salva la prima giornata.';draw('dashWeight','weight','Peso (kg)');draw('weightChart','weight','Peso (kg)');draw('calChart','calories','kcal');draw('stepsChart','steps','passi');draw('waterChart','water','ml');draw('veloChart','velo','bustine');draw('nicChart','nic','mg');renderHistory();renderPhotos();}
+function draw(id,key,label){const c=$(id);if(!c)return;const dpr=window.devicePixelRatio||1;const w=c.clientWidth||320,h=230;c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext('2d');ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);const es=state.entries.filter(e=>{let v=key==='nic'?(e.velo!=null&&e.mg!=null?e.velo*e.mg:null):e[key];return v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))});if(!es.length){ctx.fillStyle='#9aa4b5';ctx.font='13px sans-serif';ctx.fillText('Registra dati per vedere il grafico',12,h/2);return;}const vals=es.map(e=>Number(key==='nic'?e.velo*e.mg:e[key]));let min=Math.min(...vals),max=Math.max(...vals);if(min===max){min=Math.max(0,min-1);max=max+1}const pad={l:38,r:12,t:18,b:34};const pw=w-pad.l-pad.r,ph=h-pad.t-pad.b;ctx.font='10px sans-serif';ctx.strokeStyle='#293140';ctx.fillStyle='#9aa4b5';for(let i=0;i<4;i++){let y=pad.t+ph*i/3;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();ctx.fillText((max-(max-min)*i/3).toLocaleString('it-IT',{maximumFractionDigits:1}),2,y+3);}const pts=es.map((e,i)=>({x:pad.l+(es.length===1?pw/2:i*pw/(es.length-1)),y:pad.t+ph-(vals[i]-min)/(max-min)*ph,date:e.date,v:vals[i]}));ctx.strokeStyle='#b7ff35';ctx.lineWidth=2.5;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();pts.forEach(p=>{ctx.fillStyle='#b7ff35';ctx.beginPath();ctx.arc(p.x,p.y,3.5,0,Math.PI*2);ctx.fill()});ctx.fillStyle='#9aa4b5';ctx.textAlign='left';ctx.fillText(es[0].date.slice(5),pad.l,h-9);ctx.textAlign='right';ctx.fillText(es[es.length-1].date.slice(5),w-pad.r,h-9);ctx.textAlign='left';}
+function renderHistory(){const body=$('historyRows');body.innerHTML='';[...state.entries].reverse().forEach(e=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${e.date}</td><td>${fmt(e.weight)}</td><td>${fmt(e.steps)}</td><td>${fmt(e.calories)}</td><td>${e.workout||'—'}</td><td>${fmt(e.velo)}</td><td><button data-edit="${e.date}" style="background:#252d3a;color:white;border:0;border-radius:8px;padding:6px">Apri</button> <button data-del="${e.date}" style="background:#321a24;color:#ffb5c5;border:0;border-radius:8px;padding:6px">×</button></td>`;body.appendChild(tr)});$('emptyHistory').classList.toggle('hide',state.entries.length>0);body.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('Eliminare questa giornata?')){state.entries=state.entries.filter(e=>e.date!==b.dataset.del);save();render()}});body.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{const e=state.entries.find(x=>x.date===b.dataset.edit);$('date').value=e.date;for(const k of ['weight','steps','water','calories','protein','workout','crunch','velo','mg','vape','waist','bowel','stool','urination','notes'])$(k).value=e[k]??'';document.querySelector('[data-tab="daily"]').click();window.scrollTo(0,0);});}
+function renderPhotos(){for(const k of ['before','after']){const box=$(k+'Box');box.innerHTML='';if(state.photos[k]){const img=document.createElement('img');img.src=state.photos[k];box.appendChild(img)}else{const span=document.createElement('span');span.className='muted';span.textContent='Nessuna foto caricata';box.appendChild(span)}const lab=document.createElement('label');lab.htmlFor=k+'Input';lab.textContent=state.photos[k]?'↻ Cambia foto':'＋ Carica foto';box.appendChild(lab);$(k+'Date').value=state.photoDates[k]||today();}}
+async function compressImage(file){return new Promise((resolve,reject)=>{const img=new Image();const url=URL.createObjectURL(file);img.onload=()=>{const scale=Math.min(1,1200/Math.max(img.width,img.height));const canvas=document.createElement('canvas');canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);URL.revokeObjectURL(url);resolve(canvas.toDataURL('image/jpeg',.78));};img.onerror=reject;img.src=url;});}
+for(const k of ['before','after'])$(k+'Input').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{state.photos[k]=await compressImage(f);state.photoDates[k]=$(k+'Date').value||today();save();renderPhotos();}catch(err){alert('Non riesco a leggere questa immagine. Prova con un’altra foto.')}});
+$('savePhotoDates').onclick=()=>{state.photoDates.before=$('beforeDate').value;state.photoDates.after=$('afterDate').value;save();alert('Date foto salvate.');};
+$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});download(blob,'transformation-backup-'+today()+'.json')};
+$('csvBtn').onclick=()=>{const cols=['date','weight','steps','water','calories','protein','workout','crunch','velo','mg','vape','waist','bowel','stool','urination','notes'];const esc=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const csv=[cols.join(';'),...state.entries.map(e=>cols.map(k=>esc(e[k])).join(';'))].join('\n');download(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),'transformation-diario-'+today()+'.csv')};
+function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+$('importInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const imported=JSON.parse(await f.text());if(!Array.isArray(imported.entries))throw 0;if(confirm('Importare il backup? I dati locali attuali verranno sostituiti.')){state=imported;save();render();alert('Backup importato.')}}catch(err){alert('File di backup non valido.')}e.target.value=''};
+$('clearBtn').onclick=()=>{if(confirm('Vuoi cancellare tutti i dati locali e le foto? Esporta prima un backup se vuoi conservarli.')){state={entries:[],photos:{before:null,after:null},photoDates:{before:'',after:''}};save();render()}};
+window.addEventListener('resize',()=>render());
+load();render();
+</script>
+</body>
+</html>
