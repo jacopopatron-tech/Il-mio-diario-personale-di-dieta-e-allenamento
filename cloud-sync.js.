@@ -1,0 +1,133 @@
+
+(() => {
+  const URL = "https://tszkyygildzfkefivzhs.supabase.co";
+  const KEY = "sb_publishable_WsZy2W_CfZIH1hU8pLXUgw_gWSakvSP";
+
+  const panel = document.createElement("div");
+  panel.style.cssText = "max-width:1100px;margin:16px auto;padding:18px;background:#141821;color:#f4f6fb;border:1px solid #2a3140;border-radius:16px;font-family:Arial,sans-serif";
+  panel.innerHTML = `
+    <h3 style="color:#b7ff35">☁️ TRANSFORM ALBERO — CLOUD</h3>
+    <p id="taStatus">Caricamento connessione…</p>
+    <input id="taEmail" type="email" placeholder="La tua email"
+      style="padding:12px;width:100%;box-sizing:border-box;margin:6px 0">
+    <button id="taLogin" style="padding:12px;margin:5px">Ricevi link di accesso</button>
+    <button id="taSync" style="padding:12px;margin:5px" disabled>Sincronizza diario</button>
+    <button id="taLogout" style="padding:12px;margin:5px">Esci</button>
+  `;
+  document.querySelector(".wrap").prepend(panel);
+
+  const status = panel.querySelector("#taStatus");
+  const email = panel.querySelector("#taEmail");
+  const login = panel.querySelector("#taLogin");
+  const syncButton = panel.querySelector("#taSync");
+  const logout = panel.querySelector("#taLogout");
+
+  function say(message) {
+    status.textContent = message;
+  }
+
+  function loadLibrary() {
+    return new Promise((resolve, reject) => {
+      if (window.supabase) return resolve();
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  async function start() {
+    try {
+      await loadLibrary();
+      const db = window.supabase.createClient(URL, KEY);
+      const session = await db.auth.getSession();
+      let user = session.data.session?.user || null;
+
+      function update() {
+        syncButton.disabled = !user;
+        email.hidden = !!user;
+        login.hidden = !!user;
+        say(user ? "Accesso attivo: " + user.email : "Inserisci la tua email per ricevere un link sicuro.");
+      }
+
+      async function sync() {
+        if (!user) return;
+        syncButton.disabled = true;
+        say("Sincronizzazione in corso…");
+        try {
+          const result = await db.from("transform_diary_entries")
+            .select("entry_date,data").eq("user_id", user.id);
+          if (result.error) throw result.error;
+
+          const entries = Array.isArray(state.entries) ? state.entries : [];
+          const byDate = new Map(entries.map(entry => [entry.date, entry]));
+          let restored = 0;
+
+          for (const row of result.data || []) {
+            if (!byDate.has(row.entry_date)) {
+              byDate.set(row.entry_date, row.data);
+              restored++;
+            }
+          }
+
+          state.entries = [...byDate.values()].sort((a, b) => a.date.localeCompare(b.date));
+          save();
+          render();
+
+          const payload = state.entries.map(entry => ({
+            user_id: user.id,
+            entry_date: entry.date,
+            data: entry,
+            updated_at: new Date().toISOString()
+          }));
+
+          if (payload.length) {
+            const uploaded = await db.from("transform_diary_entries")
+              .upsert(payload, { onConflict: "user_id,entry_date" });
+            if (uploaded.error) throw uploaded.error;
+          }
+
+          say("Completato! Giornate nel cloud: " + state.entries.length +
+            ". Recuperate dal cloud: " + restored +
+            ". I dati locali sono stati mantenuti per le date già presenti.");
+        } catch (error) {
+          say("Errore di sincronizzazione: " + error.message +
+            ". I dati locali non sono stati cancellati.");
+        } finally {
+          syncButton.disabled = !user;
+        }
+      }
+
+      login.onclick = async () => {
+        if (!email.value.trim()) return say("Inserisci la tua email.");
+        say("Invio del link…");
+        const result = await db.auth.signInWithOtp({
+          email: email.value.trim(),
+          options: { emailRedirectTo: location.origin + location.pathname }
+        });
+        say(result.error ? result.error.message : "Controlla la posta e apri il link di accesso.");
+      };
+
+      syncButton.onclick = sync;
+      logout.onclick = async () => {
+        await db.auth.signOut();
+        user = null;
+        update();
+      };
+
+      db.auth.onAuthStateChange((event, session) => {
+        user = session?.user || null;
+        update();
+        if (user && event === "SIGNED_IN") setTimeout(sync, 500);
+      });
+
+      update();
+      if (user) await sync();
+    } catch (error) {
+      say("Connessione non disponibile. Ricarica la pagina e riprova.");
+    }
+  }
+
+  start();
+})();
